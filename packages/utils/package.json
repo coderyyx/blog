@@ -1,0 +1,35 @@
+{
+  "name": "@ugc/utils",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "sideEffects": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@base-one/prettier-config": "^1.0.0",
+    "@types/node": "^20",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "lint-staged": "^15.2.10",
+    "prettier": "^2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1",
+    "@types/lodash-es": "^4.17.12"
+  },
+  "volta": {
+    "node": "20.19.0",
+    "pnpm": "9.15.5"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21"
+  }
+}

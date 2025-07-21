@@ -1,0 +1,30 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "前端知识记录",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coderyyx/blog.git"
+  },
+  "keywords": [
+    "vue",
+    "frontent",
+    "react"
+  ],
+  "author": "coderyyx",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coderyyx/blog/issues"
+  },
+  "homepage": "https://github.com/coderyyx/blog#readme",
+
+  "packageManager": "pnpm@9.15.4",
+  "volta": {
+    "node": "20.17.0",
+    "pnpm": "9.15.4"
+  }
+}

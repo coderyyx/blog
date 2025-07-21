@@ -1,0 +1,29 @@
+# 依赖目录
+node_modules/
+.pnpm-store/
+
+# 构建输出
+dist/
+build/
+.next/
+.nuxt/
+
+# 缓存目录
+.cache/
+.temp/
+
+# 日志文件
+*.log
+
+# 环境变量文件
+.env*
+
+# 锁文件
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# 其他
+.DS_Store
+*.min.js
+*.min.css 

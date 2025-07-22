@@ -1,0 +1,42 @@
+{
+  "vue setup component with scss module": {
+    "prefix": "v-comp",
+    "body": [
+      "<template>",
+      "  <div>",
+      "  </div>",
+      "</template>",
+      "",
+      "<script setup lang=\"ts\">",
+      "defineOptions({",
+      "  name: \"$1\"",
+      "})",
+      "</script>",
+      "",
+      "<style lang=\"scss\" module>",
+      "",
+      "</style>"
+    ],
+    "description": "vue setup component with scss module"
+  },
+  "vue setup component with scss module and typescript": {
+    "prefix": "v-comp-ts",
+    "body": [
+      "<template>",
+      "  <div>",
+      "  </div>",
+      "</template>",
+      "",
+      "<script setup lang=\"ts\">",
+      "defineOptions({",
+      "  name: \"$1\"",
+      "});",
+      "",
+      "withDefaults(defineProps<{}>(),{});",
+      "</script>",
+      "",
+      "<style lang=\"scss\" module></style>"
+    ],
+    "description": ""
+  }
+}

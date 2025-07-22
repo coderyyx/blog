@@ -2,7 +2,7 @@
 
 ## 简介
 
-Tailwind CSS 是一个功能强大的 CSS 框架，它采用原子化 CSS 的方案，通过组合预定义的工具类来构建用户界面。本指南将帮助你在项目中快速接入和配置 Tailwind CSS。
+Tailwind CSS 是一个功能强大的 CSS 框架，它采用原子化 CSS 的方案，通过组合预定义的工具类来构建用户界面。这篇文档主要介绍如何快速接入和配置 Tailwind CSS。
 
 ## 安装依赖
 
@@ -116,6 +116,8 @@ const App = () => {
 
 - [颜色配置](../apps/tailwindcss-demo/src/tailwindcss/colors/index.js)
 
+> 笔者在公司项目中，通过维护统一的色盘，可以很方便的进行颜色管理。对一个站点或者一条产品线来说，设计师通常也会有一套色盘，我们和设计师约定好色值命名规则就可以配置色盘，后续使用时就可以快速选择颜色，而不需要去设计稿复制。
+
 ### 3. 响应式设计
 
 Tailwind CSS 提供了强大的响应式设计支持：
@@ -150,15 +152,13 @@ Tailwind CSS 默认会生成大量工具类，要优化生产环境构建：
 
 为获得更好的开发体验：
 
-- 安装 Tailwind CSS IntelliSense 插件
-- 配置 PostCSS 语言支持
-- 使用支持 Tailwind CSS 的代码格式化工具
+- 安装 Tailwind CSS vscode [bradlc.vscode-tailwindcss](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+- 使用支持 Tailwind CSS 的代码格式化工具 (推荐 prettier)
 
 ## 总结
 
-Tailwind CSS 提供了一种灵活且高效的样式解决方案。通过合理的配置和使用，可以显著提升开发效率和代码可维护性。建议在实际项目中：
+笔者通过在公司项目中广泛使用 Tailwind CSS 后，发现它有如下几大优势，供参考：
 
-1. 建立统一的样式规范
-2. 合理使用自定义配置
-3. 注意构建优化
-4. 保持代码的可维护性
+- 可以不用定义 classname，直接使用 tailwind 的工具类，减少了命名成本。也不用在 template 和 script 中来回切换。
+- 可以维护统一的色盘，方便统一管理颜色。
+- 因为是原子类，所以可以很方便的进行组合，减少重复代码。这个收益会随你站点复杂度增加而增加。

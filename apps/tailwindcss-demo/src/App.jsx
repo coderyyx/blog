@@ -2,9 +2,11 @@ import './App.css';
 
 const App = () => {
   return (
-    <div className="content tw-bg-[#fff] tw-text-[20px]">
+    <div className="content tw-text-[20px]">
       <h1>Rsbuild with React</h1>
-      <p>Start building amazing things with Rsbuild.</p>
+      <p className="tw-text-gt-g-grey-white-1 tw-text-sm tw-leading-3 tw-flex-center">
+        Start building amazing things with Rsbuild.
+      </p>
     </div>
   );
 };

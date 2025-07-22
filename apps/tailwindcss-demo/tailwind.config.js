@@ -1,6 +1,12 @@
+import colors from './src/tailwindcss/colors';
+import { basePlugin } from './src/tailwindcss/plugins/base';
+import { scrollbarPlugin } from './src/tailwindcss/plugins/scrollbar';
+
 /** @type {import('tailwindcss').Config} */
 export default {
+  // 配置所有 Tailwind 类名的前缀。防止与现有类名冲突
   prefix: 'tw-',
+  // 配置所有 HTML 模板、JavaScript 组件以及其他包含 Tailwind 类名的源文件的路径。
   content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
   theme: {
     colors: {
@@ -109,78 +115,16 @@ export default {
         },
       },
     },
+    // 屏幕断点
+    screens: {
+      sm: { max: `523px` },
+      md: { max: `659px` },
+      lg: { max: `884px` },
+      xl: { max: `1024px` },
+    },
     extend: {
-      colors: {
-        white: 'rgba(255, 255, 255, 1)',
-        black: 'rgba(0, 0, 0, 1)',
-        transparent: 'rgba(255, 255, 255, 0)',
-        // 通用颜色 g => general
-        'gt-g': {
-          func: {
-            error: 'rgba(255, 77, 77, 1)',
-            bg: 'rgba(0, 0, 0, 0.65)',
-            toast: 'rgba(0, 0, 0, 0.75)',
-          },
-          grey: {
-            white: {
-              1: 'rgba(255, 255, 255, 1)',
-              2: 'rgba(255, 255, 255, 0.48)',
-              3: 'rgba(255, 255, 255, 0.32)',
-              4: 'rgba(255, 255, 255, 0.16)',
-              5: 'rgba(255, 255, 255, 0.12)',
-              6: 'rgba(255, 255, 255, 0.08)',
-              7: 'rgba(255, 255, 255, 0.04)',
-              8: 'rgba(255, 255, 255, 0.8)',
-              9: 'rgba(255, 255, 255, 0.64)',
-              10: 'rgba(255, 255, 255, 0.02)',
-            },
-            black: {
-              1: 'rgba(0, 0, 0, 1)',
-              2: 'rgba(0, 0, 0, 0.48)',
-              3: 'rgba(0, 0, 0, 0.32)',
-              4: 'rgba(0, 0, 0, 0.16)',
-              5: 'rgba(0, 0, 0, 0.12)',
-              6: 'rgba(0, 0, 0, 0.08)',
-              7: 'rgba(0, 0, 0, 0.04)',
-              9: 'rgba(0, 0, 0, 0.64)',
-            },
-          },
-        },
-        // d => dark
-        'gt-d': {
-          text: {
-            primary: 'rgba(0, 0, 0, 0.90)',
-            secondary: 'rgba(0, 0, 0, 0.65)',
-            tertiary: 'rgba(0, 0, 0, 0.45)',
-            quaternary: 'rgba(0, 0, 0, 0.25)',
-            black: {
-              1: '#000',
-              2: 'rgba(0, 0, 0, 0.90)',
-              3: 'rgba(0, 0, 0, 0.65)',
-              4: 'rgba(0, 0, 0, 0.45)',
-              5: 'rgba(0, 0, 0, 0.25)',
-            },
-          },
-        },
-
-        // l => light
-        'gt-l': {
-          text: {
-            primary: 'rgba(255, 255, 255, 0.90)',
-            secondary: 'rgba(255, 255, 255, 0.65)',
-            tertiary: 'rgba(255, 255, 255, 0.45)',
-            quaternary: 'rgba(255, 255, 255, 0.35)',
-            white: {
-              1: '#fff',
-              2: 'rgba(255, 255, 255, 0.90)',
-              3: 'rgba(255, 255, 255, 0.65)',
-              4: 'rgba(255, 255, 255, 0.45)',
-              5: 'rgba(255, 255, 255, 0.35)',
-            },
-          },
-        },
-      },
+      colors,
     },
   },
-  plugins: [],
+  plugins: [basePlugin, scrollbarPlugin],
 };

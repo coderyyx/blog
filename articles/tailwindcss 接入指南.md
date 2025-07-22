@@ -2,7 +2,7 @@
 
 ## 简介
 
-Tailwind CSS 是一个功能强大的 CSS 框架，它采用原子化 CSS 的方案，通过组合预定义的工具类来构建用户界面。这篇文档主要介绍如何快速接入和配置 Tailwind CSS。
+Tailwind CSS 是一个功能强大的 CSS 框架，它采用原子化 CSS 的方案，通过组合预定义的工具类来构建用户界面。这篇文档主要介绍如何快速接入、配置 Tailwind CSS 以及最佳实践。
 
 ## 安装依赖
 
@@ -106,6 +106,8 @@ const App = () => {
 
 ### 2. 色盘配置
 
+默认情况下，所有与颜色相关的核心插件（如 backgroundColor 、 borderColor 、 textColor 等）都会继承这些颜色。所以配置色盘后收益的是站点中所有与颜色相关的都可以使用色盘中的颜色。
+
 可以按照以下方式组织颜色：
 
 - 按照功能分类（如 functional colors）
@@ -145,7 +147,6 @@ Tailwind CSS 提供了强大的响应式设计支持：
 Tailwind CSS 默认会生成大量工具类，要优化生产环境构建：
 
 - 确保正确配置 `content` 选项
-- 使用 PurgeCSS（Tailwind 内置）清除未使用的样式
 - 考虑使用 `@apply` 抽取常用组合
 
 ### 2. IDE 支持
@@ -154,6 +155,72 @@ Tailwind CSS 默认会生成大量工具类，要优化生产环境构建：
 
 - 安装 Tailwind CSS vscode [bradlc.vscode-tailwindcss](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 - 使用支持 Tailwind CSS 的代码格式化工具 (推荐 prettier)
+
+VSCode 相关配置（`.vscode/settings.json`）：
+
+```json
+{
+  "tailwindCSS.rootFontSize": 16
+}
+```
+
+- `tailwindCSS.rootFontSize`: 设置根元素字体大小（单位：px），这会影响 vscode 的提示。例如，当设置为 16px 时：
+  - `1rem = 16px`
+  - `0.25rem = 4px`（Tailwind 默认的 1 个间距单位）
+
+### 3. 间距系统
+
+Tailwind CSS 提供了一套完整的间距系统，默认情况下：
+
+- 一个间距单位等于 0.25rem（通常为 4px）
+- 间距值是成比例的，例如 16 是 8 的两倍
+- 支持小数点值，如 0.5、1.5、2.5 等
+
+> **重要说明：**
+>
+> 以 `tw-pl-1` 为例：
+>
+> - Tailwind 中的定义：`padding-left: 0.25rem`
+> - VSCode 提示：当 `tailwindCSS.rootFontSize: 16px` 时，提示 `padding-left: 4px`
+> - **注意**：实际渲染的像素值取决于 HTML 根元素的字体大小（即 `html` 元素的 `font-size`）
+
+可以通过以下两种方式自定义间距：
+
+1. 扩展默认间距
+
+```javascript
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  theme: {
+    extend: {
+      spacing: {
+        13: "3.25rem", // 52px
+        15: "3.75rem", // 60px
+        128: "32rem", // 512px
+        144: "36rem", // 576px
+      },
+    },
+  },
+};
+```
+
+2. 覆盖默认间距
+
+```javascript
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  theme: {
+    spacing: {
+      sm: "8px",
+      md: "12px",
+      lg: "16px",
+      xl: "24px",
+    },
+  },
+};
+```
+
+> 注意：间距配置会影响 padding、margin、width、height、gap、inset、space、translate、scrollMargin 和 scrollPadding 等核心插件。建议在项目初期就规划好间距系统，以保持一致性。
 
 ## 总结
 

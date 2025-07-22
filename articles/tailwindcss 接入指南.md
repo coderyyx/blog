@@ -4,12 +4,14 @@
 
 Tailwind CSS 是一个功能强大的 CSS 框架，它采用原子化 CSS 的方案，通过组合预定义的工具类来构建用户界面。这篇文档主要介绍如何快速接入、配置 Tailwind CSS 以及最佳实践。
 
+> 该文档在 tailwindcss@3.4.17 版本下,4.x 有差异，但是核心配置和使用方式是相同的。
+
 ## 安装依赖
 
 首先需要安装 Tailwind CSS 及其依赖项：
 
 ```bash
-pnpm add -D tailwindcss postcss autoprefixer
+pnpm add -D tailwindcss@3.4.17 postcss autoprefixer
 ```
 
 ## 初始化配置文件
@@ -139,6 +141,10 @@ Tailwind CSS 提供了强大的响应式设计支持：
 
 - [滚动条的样式](../apps/tailwindcss-demo/src/tailwindcss/plugins/scrollbar.js)
 - [常用组合类](../apps/tailwindcss-demo/src/tailwindcss/plugins/base.js)
+
+### 5. 可复用的预设
+
+在公司内部经过多个项目实践后其实可以提取一套公用的 `tailwindcss` 预设配置，通常可以考虑提取成一个第三方包，新项目可以更方便的接入。可以参考[@base-one/prettier-config](https://www.npmjs.com/package/@base-one/tailwind)
 
 ## 常见问题
 

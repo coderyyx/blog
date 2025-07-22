@@ -4,7 +4,7 @@
 
 Tailwind CSS 是一个功能强大的 CSS 框架，它采用原子化 CSS 的方案，通过组合预定义的工具类来构建用户界面。这篇文档主要介绍如何快速接入、配置 Tailwind CSS 以及最佳实践。
 
-> 该文档在 tailwindcss@3.4.17 版本下,4.x 有差异，但是核心配置和使用方式是相同的。
+> 该文档在 tailwindcss@3.4.17 版本下，4.x 有差异，但是核心配置和使用方式是相同的。
 
 ## 安装依赖
 
@@ -145,6 +145,14 @@ Tailwind CSS 提供了强大的响应式设计支持：
 ### 5. 可复用的预设
 
 在公司内部经过多个项目实践后其实可以提取一套公用的 `tailwindcss` 预设配置，通常可以考虑提取成一个第三方包，新项目可以更方便的接入。可以参考[@base-one/prettier-config](https://www.npmjs.com/package/@base-one/tailwind)
+
+## 移动端适配
+
+Tailwind CSS 默认是基于桌面端设计的，在移动端使用时需要进行适配。具体如何适配可以参见笔者同事之前写的一篇文档[tailwindcss 移动端适配](https://juejin.cn/post/7375791047535231016?searchId=2025071011235425CAA104EF175E56E111)
+
+## 总结
+
+Tailwind CSS 是一个非常强大的 CSS 框架，它可以帮助我们快速构建用户界面。通过本文的介绍，我们可以了解到如何快速接入、配置 Tailwind CSS 以及最佳实践。
 
 ## 常见问题
 

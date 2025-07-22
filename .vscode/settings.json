@@ -1,0 +1,51 @@
+{
+  "npm.packageManager": "pnpm",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "eslint.workingDirectories": [
+    { "pattern": "apps/*" },
+    { "pattern": "packages/*" },
+    { "pattern": "features/*" }
+  ],
+  "files.autoSave": "onFocusChange",
+  "scss.validate": false,
+  "scss.lint.unknownAtRules": "ignore",
+  "tailwindCSS.experimental.classRegex": ["([a-zA-Z0-9\\-:]+)"],
+  "tailwindCSS.rootFontSize": 16,
+  "tailwindCSS.classFunctions": ["cva", "cx"],
+  "cSpell.words": [
+    "cooldown",
+    "demi",
+    "favo",
+    "hdrag",
+    "jssdk",
+    "opapi",
+    "paimon",
+    "platregistry",
+    "prebeta",
+    "prodexp",
+    "redpoint",
+    "retcode",
+    "rsbuild",
+    "RSDOCTOR",
+    "rspack",
+    "tailwindcss",
+    "tanstack",
+    "unplugin",
+    "vclosepopover",
+    "vtooltip",
+    "vueuse"
+  ],
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

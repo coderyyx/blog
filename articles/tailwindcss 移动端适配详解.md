@@ -134,11 +134,24 @@ px: '1px',
 // 其余预设单位同理
 ```
 
-通过上面对比，可以知道我们在 `gtThemeAdapter` 函数中，将 `mr-1` 转换为 `calc(4 * var(--tpx))`。只要在标准设备尺寸下将 `tpx` 始终保持为 `1px` 的大小，我们就可以继续沿用 TailwindCSS 的“1 个基本单位为 4px”的规则。
+通过上面对比，可以知道我们在 `gtThemeAdapter` 函数中，将 `mr-1` 转换为 `calc(4 * var(--tpx))`。**只要在标准设备尺寸下将 `tpx` 始终保持为 `1px` 的大小，我们就可以继续沿用 TailwindCSS 的 `1 个基本单位为 4px` 的规则**。
+
+### 动态设置全局 CSS 变量 `--tpx` 的值
+
+`flexible` 函数中，动态设置全局 CSS 变量 `--tpx` 的值。让 `tpx` 的值始终保持为 `1px` 的大小。
+
+```js
+document.documentElement.style.setProperty(
+  "--tpx",
+  `${1 / parseFloat(window.__ROOT_FONT_SIZE__)}rem`
+);
+```
+
+### 具体案例
 
 以下是一些具体案例：
 
-- 在标准设备尺寸下使用 rem 布局，`RootFontSize` 为 16px，`tpx` 为 0.0625rem，即 1 / 16 = 0.0625。
+- 在标准设备尺寸下使用 rem 布局，`RootFontSize` 为 16px，`tpx` 为 0.0625rem，即 1 / 16 = 0.0625。详情可见 [apps/tailwindcss-demo/home](../apps/tailwindcss-demo/src/pages/home/index.jsx)
 - 在标准设备尺寸下使用 rem 布局，`RootFontSize` 为 100px，`tpx` 为 0.01rem，即 1 / 100 = 0.01。详情可见 [apps/tailwindcss-demo/about](../apps/tailwindcss-demo/src/pages/about/index.jsx)
 - 在标准设备尺寸下使用 vw 布局，假设屏幕宽度为 375px，100vw = 375px，因此 1vw = 3.75px，则 1px 为 1vw/3.75，即 `tpx` 为 (100/375)vw。
 - 如果移动端和 PC 端在同一个应用中，那么在页面尺寸发生变化时，动态修改 `--tpx` 的值即可。例如，在 PC 端设置 `--tpx` 为 1px，而在移动端设置 `--tpx` 为 0.01rem 或(1/3.75)vw。

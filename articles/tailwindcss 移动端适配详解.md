@@ -120,7 +120,7 @@ export default {
 在 `flexible.js` 中，通过动态设置 `--tpx` 的值来控制单位大小：
 
 ```js
-// rootFontSize 为基准大小，16px
+// rootFontSize 为基准大小，16px 或者 100px等等其他基准
 document.documentElement.style.setProperty(
   "--tpx",
   `${1 / parseFloat(rootFontSize)}rem`
@@ -128,17 +128,18 @@ document.documentElement.style.setProperty(
 ```
 
 2、vw 布局
-vw 布局，由于要保证 `--tpx` 为 `1px`，所以设置 `--tpx=100vw/375`
+
+由于要保证 `--tpx` 为 `1px`，所以设置 `--tpx=100vw/375`
 
 📌 示例：
 `html.fontSize` 表示标准设备尺寸下的大小
 
-| 场景        | html.fontSize           | --tpx 值                             | tw-m-1 实际大小 |
-| ----------- | ----------------------- | ------------------------------------ | --------------- |
-| PC 默认     | 16px                    | 1 / 16 = 0.0625rem → 1px             | 4px             |
-| 移动端      | 100px                   | 1 / 100 = 0.01rem → 1px              | 4px             |
-| vw 布局     | N/A                     | (100 / 375)vw → 1px                  | 4px             |
-| PC & 移动端 | PC: 16px, 移动端: 100px | PC: 1px = 4px, 移动端: 1px = 0.01rem | 4px             |
+| 场景        | html.fontSize           | --tpx 值                 | tw-m-1 实际大小 |
+| ----------- | ----------------------- | ------------------------ | --------------- |
+| PC 默认     | 16px                    | 1 / 16 = 0.0625rem → 1px | 4px             |
+| 移动端      | 100px                   | 1 / 100 = 0.01rem → 1px  | 4px             |
+| vw 布局     | N/A                     | (100 / 375)vw → 1px      | 4px             |
+| PC & 移动端 | PC: 16px, 移动端: 100px | PC: 1px, 移动端: 0.01rem | 4px             |
 
 > 🎯 无论使用哪种布局方式，只要 `--tpx` 始终代表 1px，Tailwind 的单位系统就能保持一致！
 

@@ -1,4 +1,3 @@
-
 import { debounce, round } from 'lodash-es';
 
 const UI_WIDTH = 375;
@@ -6,7 +5,7 @@ const baseFontSize = 100;
 
 const DeviceWidth = document.documentElement && document.documentElement.clientWidth;
 
-function setRootFontSize() {
+function setRootFontSize(rootFontSize?: number) {
   const width = document.documentElement && document.documentElement.clientWidth;
 
   const vh = window.innerHeight * 0.01;
@@ -14,7 +13,7 @@ function setRootFontSize() {
 
   // 不无限缩放，最大宽度为750px
   const maxWidth = Math.min(parseFloat(width.toString()), 750);
-  const fontSize = ((maxWidth / UI_WIDTH) * baseFontSize).toFixed(4);
+  const fontSize = ((maxWidth / UI_WIDTH) * (rootFontSize || baseFontSize)).toFixed(4);
   document.documentElement.style.fontSize = fontSize + 'px';
   window.__ROOT_FONT_SIZE__ = fontSize + 'px';
 
@@ -31,14 +30,14 @@ const handler = debounce(function () {
   setRootFontSize();
 }, 300);
 
-export const flexible = () => {
+export const flexible = (rootFontSize?: number) => {
   // 设置全局 CSS 变量，用于在组件中便捷地使用响应式单位
-  document.documentElement.style.setProperty('--gpx', '0.01rem');
+  document.documentElement.style.setProperty('--tpx', `${1 / (rootFontSize || baseFontSize)}rem`);
 
-  setRootFontSize();
+  setRootFontSize(rootFontSize);
   window.addEventListener('resize', handler);
   // 一些设备初始计算有 bug，延迟重新计算
-  setTimeout(setRootFontSize, 1000);
+  setTimeout(() => setRootFontSize(rootFontSize), 1000);
 };
 
 export function px2rem(px: number) {

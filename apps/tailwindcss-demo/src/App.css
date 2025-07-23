@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@tailwind base; /* 引入基础样式，包括 CSS 重置和基础样式 */
+@tailwind components; /* 引入组件样式，包含预定义的可复用组件 */
+@tailwind utilities; /* 引入实用工具类，用于控制布局、排版、颜色等各种样式 */
 
 body {
   margin: 0;

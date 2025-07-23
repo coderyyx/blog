@@ -1,6 +1,7 @@
 import colors from './src/tailwindcss/colors';
 import { basePlugin } from './src/tailwindcss/plugins/base';
 import { scrollbarPlugin } from './src/tailwindcss/plugins/scrollbar';
+import { gtThemeAdapter } from './src/tailwindcss/themes/index';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -123,6 +124,7 @@ export default {
       xl: { max: `1024px` },
     },
     extend: {
+      ...gtThemeAdapter(),
       colors,
     },
   },

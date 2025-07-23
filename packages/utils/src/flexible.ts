@@ -24,12 +24,6 @@ function setRootFontSize(rootFontSize?: number) {
     document.documentElement.style.fontSize = fixedFontSize + 'px';
     window.__ROOT_FONT_SIZE__ = fixedFontSize + 'px';
   }
-
-  // 设置全局 CSS 变量，用于在组件中便捷地使用响应式单位
-  document.documentElement.style.setProperty(
-    '--tpx',
-    `${1 / parseFloat(window.__ROOT_FONT_SIZE__)}rem`,
-  );
 }
 
 const handler = debounce(function () {
@@ -37,6 +31,9 @@ const handler = debounce(function () {
 }, 300);
 
 export const flexible = (rootFontSize?: number) => {
+  // 设置全局 CSS 变量，用于在组件中便捷地使用响应式单位
+  document.documentElement.style.setProperty('--tpx', `${1 / (rootFontSize || baseFontSize)}rem`);
+
   setRootFontSize(rootFontSize);
   window.addEventListener('resize', handler);
   // 一些设备初始计算有 bug，延迟重新计算

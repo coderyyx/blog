@@ -218,18 +218,63 @@ export default {
 对比 `tailwindcss` 的默认配置
 
 ```js
-px: '1px',
-0: '0px',
-1: '0.25rem', // 4px
-2: '0.5rem',  // 8px
-3: '0.75rem', // 12px
-4: '1rem',    // 16px
-5: '1.25rem', // 20px
-6: '1.5rem',  // 24px
-7: '1.75rem', // 28px
-8: '2rem',    // 32px
-9: '2.25rem', // 36px
-10: '2.5rem', // 40px
-10.5: '2.625rem', // 42px
+  0: '0px',
+  0.5: '0.125rem',  // 2px
+  1: '0.25rem',     // 4px
+  1.5: '0.375rem',  // 6px
+  2: '0.5rem',      // 8px
+  2.5: '0.625rem',  // 10px
+  3: '0.75rem',     // 12px
+  3.5: '0.875rem',  // 14px
+  4: '1rem',        // 16px
+  5: '1.25rem',     // 20px
+  6: '1.5rem',      // 24px
+  7: '1.75rem',     // 28px
+  8: '2rem',        // 32px
+  9: '2.25rem',     // 36px
+  10: '2.5rem',     // 40px
 // 其余预设单位同理
 ```
+
+## 疑问
+
+### convert 函数
+
+convert 中为什么是 `16 * value`?
+
+🧠 一句话总结：
+
+> `16 * value` 是为了将 rem 单位转换为 px，因为默认情况下 `1rem = 16px`。
+
+分析一下生成 spacing 的代码
+
+```js
+Array.from({ length: 96 }, (_, index) => index * 0.5)
+  .filter((i) => i)
+  .reduce((acc, i) => ({ ...acc, [i]: convert(i / 4) }), {});
+```
+
+部分如下：
+
+| i（px） | i / 4 | convert(i / 4)         | 最终 CSS 值 |
+| ------- | ----- | ---------------------- | ----------- |
+| 0.5     | 0.125 | calc(2 \* var(--tpx))  | 2px         |
+| 1       | 0.25  | calc(4 \* var(--tpx))  | 4px         |
+| 1.5     | 0.375 | calc(6 \* var(--tpx))  | 6px         |
+| 2       | 0.5   | calc(8 \* var(--tpx))  | 8px         |
+| 2.5     | 0.625 | calc(10 \* var(--tpx)) | 10px        |
+| 3       | 0.75  | calc(12 \* var(--tpx)) | 12px        |
+| 3.5     | 0.875 | calc(14 \* var(--tpx)) | 14px        |
+| 4       | 1.0   | calc(16 \* var(--tpx)) | 16px        |
+| 5       | 1.25  | calc(20 \* var(--tpx)) | 20px        |
+| 6       | 1.5   | calc(24 \* var(--tpx)) | 24px        |
+| 8       | 2.0   | calc(32 \* var(--tpx)) | 32px        |
+| 10      | 2.5   | calc(40 \* var(--tpx)) | 40px        |
+| 12      | 3.0   | calc(48 \* var(--tpx)) | 48px        |
+| 16      | 4.0   | calc(64 \* var(--tpx)) | 64px        |
+| 20      | 5.0   | calc(80 \* var(--tpx)) | 80px        |
+| 24      | 6.0   | calc(96 \* var(--tpx)) | 96px        |
+
+所以对于 `tw-mt-1` -> `convert(1/4)` === `convert(0.25)` -> `calc(${16 * 0.25} * var(--tpx))` === `calc(4 * var(--tpx))`
+
+当 --tpx 保持 1px，上述 `tw-mt-1` === `calc(4px)` 与 tailwind 默认保持一致

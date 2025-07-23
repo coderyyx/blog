@@ -68,24 +68,77 @@ export const gtThemeAdapter = (unit = "--tpx") => {
       "2xl": `${convert(1)}` /* 16px */,
       "3xl": `${convert(1.5)}` /* 24px */,
     },
-    minWidth: (theme) => ({
-      ...theme("spacing"),
-    }),
-    maxWidth: (theme) => ({
-      ...theme("spacing"),
-      0: "0rem",
-      xs: `${convert(20)}` /* 320px */,
-      sm: `${convert(24)}` /* 384px */,
-      md: `${convert(28)}` /* 448px */,
-      lg: `${convert(32)}` /* 512px */,
-      xl: `${convert(36)}` /* 576px */,
-      "2xl": `${convert(42)}` /* 672px */,
-      "3xl": `${convert(48)}` /* 768px */,
-      "4xl": `${convert(56)}` /* 896px */,
-      "5xl": `${convert(64)}` /* 1024px */,
-      "6xl": `${convert(72)}` /* 1152px */,
-      "7xl": `${convert(80)}` /* 1280px */,
-    }),
   };
 };
 ```
+
+修改 tailwindcss 的配置文件，引入 `gtThemeAdapter` 函数，并配置 `theme` 中的 `extend` 属性。
+
+```js
+export default {
+  prefix: "tw-",
+  content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
+  theme: {
+    extend: {
+      ...gtThemeAdapter(),
+      colors,
+    },
+  },
+  plugins: [basePlugin, scrollbarPlugin],
+};
+```
+
+我们通过 `spacing` 分析一下是如何处理的。根据上述代码 `spacing` 生成如下结果：
+
+```js
+0.5: "calc(2 * var(--tpx))",
+1: "calc(4 * var(--tpx))",
+1.5: "calc(6 * var(--tpx))",
+2: "calc(8 * var(--tpx))",
+2.5: "calc(10 * var(--tpx))",
+3: "calc(12 * var(--tpx))",
+3.5: "calc(14 * var(--tpx))",
+4: "calc(16 * var(--tpx))",
+4.5: "calc(18 * var(--tpx))",
+5: "calc(20 * var(--tpx))",
+5.5: "calc(22 * var(--tpx))",
+6: "calc(24 * var(--tpx))",
+6.5: "calc(26 * var(--tpx))",
+7: "calc(28 * var(--tpx))",
+7.5: "calc(30 * var(--tpx))",
+8: "calc(32 * var(--tpx))",
+8.5: "calc(34 * var(--tpx))",
+9: "calc(36 * var(--tpx))",
+9.5: "calc(38 * var(--tpx))",
+10: "calc(40 * var(--tpx))",
+10.5: "calc(42 * var(--tpx))",
+// 其余预设单位同理
+```
+
+对比 `tailwindcss` 的默认配置
+
+```js
+px: '1px',
+0: '0px',
+1: '0.25rem', // 4px
+2: '0.5rem',  // 8px
+3: '0.75rem', // 12px
+4: '1rem',    // 16px
+5: '1.25rem', // 20px
+6: '1.5rem',  // 24px
+7: '1.75rem', // 28px
+8: '2rem',    // 32px
+9: '2.25rem', // 36px
+10: '2.5rem', // 40px
+10.5: '2.625rem', // 42px
+// 其余预设单位同理
+```
+
+通过上面对比，可以知道我们在 `gtThemeAdapter` 函数中，将 `mr-1` 转换为 `calc(4 * var(--tpx))`。只要在标准设备尺寸下将 `tpx` 始终保持为 `1px` 的大小，我们就可以继续沿用 TailwindCSS 的“1 个基本单位为 4px”的规则。
+
+以下是一些具体案例：
+
+- 在标准设备尺寸下使用 rem 布局，`RootFontSize` 为 16px，`tpx` 为 0.0625rem，即 1 / 16 = 0.0625。
+- 在标准设备尺寸下使用 rem 布局，`RootFontSize` 为 100px，`tpx` 为 0.01rem，即 1 / 100 = 0.01。详情可见 [apps/tailwindcss-demo/about](../apps/tailwindcss-demo/src/pages/about/index.jsx)
+- 在标准设备尺寸下使用 vw 布局，假设屏幕宽度为 375px，100vw = 375px，因此 1vw = 3.75px，则 1px 为 1vw/3.75，即 `tpx` 为 (100/375)vw。
+- 如果移动端和 PC 端在同一个应用中，那么在页面尺寸发生变化时，动态修改 `--tpx` 的值即可。例如，在 PC 端设置 `--tpx` 为 1px，而在移动端设置 `--tpx` 为 0.01rem 或(1/3.75)vw。

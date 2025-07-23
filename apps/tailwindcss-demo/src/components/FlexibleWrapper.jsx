@@ -10,7 +10,7 @@ const FlexibleWrapper = ({ children }) => {
     // 根据不同路由设置不同的设计稿宽度
     const flexibleConfig = {
       '/16': 16, // 首页使用 16px 作为基准
-      '/100': 100, // 关于页面使用 32px 作为基准
+      '/100': 100, // 关于页面使用 100px 作为基准
     };
 
     const designWidth = flexibleConfig[location.pathname] || 16;

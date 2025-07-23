@@ -4,7 +4,22 @@
 
 本文主要介绍如何使用 Tailwind CSS 进行移动端适配以及原理的详解。
 
-## 前置知识
+## 传统 Tailwind 单位机制回顾
+
+Tailwind 默认使用 rem 作为单位：
+
+- `tw-m-1` → `margin: 0.25rem` → 默认 16px 字体大小下，等于 4px
+- 所有 spacing、lineHeight、borderRadius 等都基于 1rem = 16px 的假设
+
+但在移动端开发中，常见的做法是：
+
+- 使用 flexible.js 动态设置 html.fontSize，以实现等比缩放（如 html.fontSize = 100px）
+- 或使用 vw 布局（如 1vw = 3.75px）
+
+这就导致 Tailwind 的默认单位系统不再适用，因为：
+
+- tw-m-1 在 html.fontSize = 100px 下，变成了 0.25rem = 25px，而不是期望的 4px
+- Tailwind 无法感知设备的缩放比例
 
 接触过 Tailwind CSS 的同学应该都知道，Tailwind CSS 中的一个单位是 `4px`。
 
@@ -29,9 +44,94 @@
 2. 同一个项目同时存在 PC 端和移动端
 3. 已有的项目使用的是 `vw` 的自适应方案
 
-经过探索，我们摸索出了一套通用的方案，可以满足大部分场景。**把构建时的单位迁移至运行时确定，引入一个中间 `css 变量`**
+经过探索，我们摸索出了一套通用的方案，可以满足大部分场景。**将 Tailwind 的单位系统从静态的 rem 转换为动态可配置的单位，从而实现跨设备、跨布局方式（如 rem、vw）的统一适配。**
 
 ## 实现原理
+
+> 将 Tailwind 的单位系统从 rem 拆离出来，通过 --tpx 这个变量控制单位大小
+
+✅ 原理简述
+
+- `--tpx` 表示 1px 的缩放值
+- 所有 Tailwind 的单位都基于 `--tpx` 来计算
+- 例如：`tw-m-1` → `margin: calc(4 * var(--tpx))`
+
+这样做的好处是：
+
+- Tailwind 的单位不再依赖 html.fontSize
+- 可以动态控制单位大小（如响应式设计、多端适配）
+
+### 代码解析：gtThemeAdapter(unit = "--tpx")
+
+这个函数是整个适配方案的核心抽象层，它的作用是：
+
+> 将 Tailwind 的单位从静态值（如 0.25rem）转换为基于 --tpx 的动态表达式
+
+1. `convert(value)` 函数
+
+```js
+const convert = (value) => `calc(${16 * value} * var(${unit}))`;
+```
+
+- `value` 是 Tailwind 中的单位值（如 0.25 表示 4px）
+- `16 * value` 表示转换为像素值（如 0.25 → 4px）
+- 最终表达式为：`calc(4px * var(--tpx))`
+
+2. `spacing` 的生成逻辑
+
+```js
+spacing: () => ({
+  ...Array.from({ length: 96 }, (_, index) => index * 0.5)
+    .filter((i) => i)
+    .reduce((acc, i) => ({ ...acc, [i]: `${convert(i / 4)}` }), {}),
+}),
+```
+
+- 生成从 0.5 到 47.5 的所有 tw-m-_、tw-p-_ 等间距值
+- 每个值都通过 `convert(i / 4)` 转换为 `calc(... * var(--tpx))`
+
+3. `lineHeight` 和 `borderRadius` 的生成逻辑
+
+与 `spacing` 类似，这些属性也通过 `convert()` 转换为基于 `--tpx` 的表达式。
+
+### Tailwind 配置中使用 `gtThemeAdapter`
+
+```js
+export default {
+  theme: {
+    extend: {
+      ...gtThemeAdapter(),
+      colors,
+    },
+  },
+};
+```
+
+- `gtThemeAdapter()` 返回的配置对象被合并到 Tailwind 的 `theme.extend` 中
+- 最终生成的 Tailwind 工具类样式中，所有单位都变成了 `calc(... * var(--tpx))`
+
+### 运行时控制 `--tpx` 的值
+
+在 `flexible.js` 中，通过动态设置 `--tpx` 的值来控制单位大小：
+
+```js
+document.documentElement.style.setProperty(
+  "--tpx",
+  `${1 / parseFloat(window.__ROOT_FONT_SIZE__)}rem`
+);
+```
+
+📌 示例：
+`html.fontSize` 表示标准设备尺寸下的大小
+
+| 场景        | html.fontSize           | --tpx 值                             | tw-m-1 实际大小 |
+| ----------- | ----------------------- | ------------------------------------ | --------------- |
+| PC 默认     | 16px                    | 1 / 16 = 0.0625rem → 1px             | 4px             |
+| 移动端      | 100px                   | 1 / 100 = 0.01rem → 1px              | 4px             |
+| vw 布局     | N/A                     | (100 / 375)vw → 1px                  | 4px             |
+| PC & 移动端 | PC: 16px, 移动端: 100px | PC: 1px = 4px, 移动端: 1px = 0.01rem | 4px             |
+
+> 🎯 无论使用哪种布局方式，只要 `--tpx` 始终代表 1px，Tailwind 的单位系统就能保持一致！
 
 核心代码如下，有删减，完整代码见 [gtThemeAdapter](../apps/tailwindcss-demo/src/tailwindcss/themes/index.js)
 
@@ -133,25 +233,3 @@ px: '1px',
 10.5: '2.625rem', // 42px
 // 其余预设单位同理
 ```
-
-通过上面对比，可以知道我们在 `gtThemeAdapter` 函数中，将 `mr-1` 转换为 `calc(4 * var(--tpx))`。**只要在标准设备尺寸下将 `tpx` 始终保持为 `1px` 的大小，我们就可以继续沿用 TailwindCSS 的 `1 个基本单位为 4px` 的规则**。
-
-### 动态设置全局 CSS 变量 `--tpx` 的值
-
-`flexible` 函数中，动态设置全局 CSS 变量 `--tpx` 的值。让 `tpx` 的值始终保持为 `1px` 的大小。
-
-```js
-document.documentElement.style.setProperty(
-  "--tpx",
-  `${1 / parseFloat(window.__ROOT_FONT_SIZE__)}rem`
-);
-```
-
-### 具体案例
-
-以下是一些具体案例：
-
-- 在标准设备尺寸下使用 rem 布局，`RootFontSize` 为 16px，`tpx` 为 0.0625rem，即 1 / 16 = 0.0625。详情可见 [apps/tailwindcss-demo/home](../apps/tailwindcss-demo/src/pages/home/index.jsx)
-- 在标准设备尺寸下使用 rem 布局，`RootFontSize` 为 100px，`tpx` 为 0.01rem，即 1 / 100 = 0.01。详情可见 [apps/tailwindcss-demo/about](../apps/tailwindcss-demo/src/pages/about/index.jsx)
-- 在标准设备尺寸下使用 vw 布局，假设屏幕宽度为 375px，100vw = 375px，因此 1vw = 3.75px，则 1px 为 1vw/3.75，即 `tpx` 为 (100/375)vw。
-- 如果移动端和 PC 端在同一个应用中，那么在页面尺寸发生变化时，动态修改 `--tpx` 的值即可。例如，在 PC 端设置 `--tpx` 为 1px，而在移动端设置 `--tpx` 为 0.01rem 或(1/3.75)vw。

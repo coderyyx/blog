@@ -21,13 +21,11 @@ Tailwind 默认使用 rem 作为单位：
 - tw-m-1 在 html.fontSize = 100px 下，变成了 0.25rem = 25px，而不是期望的 4px
 - Tailwind 无法感知设备的缩放比例
 
-接触过 Tailwind CSS 的同学应该都知道，Tailwind CSS 中的一个单位是 `4px`。
-
 举个例子 🌰：平时写 `tw-mr-1`，最终会编译成 `margin-right: 0.25rem;`，而一般 PC 端默认 html 的 `font-size` 是 `16px`，所以 `0.25rem` 就是 `4px`。也就有了在 `tailwindcss` 中一个单位就是 `4px` 的说法。
 
 <img width="291" height="87" alt="image" src="https://github.com/user-attachments/assets/86a0b908-7249-4910-941a-b89514aab82c" />
 
-可以在 `apps/tailwindcss-demo` 根路由下查看，根路由下使用 `16px` 作为基准。
+可以在 [apps/tailwindcss-demo](../apps/tailwindcss-demo/src/pages/home/index.jsx) 根路由下查看，根路由下使用 `16px` 作为基准。
 
 ## 移动端适配
 
@@ -38,7 +36,7 @@ Tailwind 默认使用 rem 作为单位：
 3. 配置好 `px2rem` 等 `PostCSS` 插件，将代码中的 `px` 单位转为合适的 `rem` 单位。
 4. 接入 TailwindCSS。
 
-这样我们就可以愉快的进行 `tailwindcss` 在移动端上进行开发了。但现实情况是接入的通常不是一个新项目，所以会存在比较复杂的场景（历史原因，大家都懂的），比如：
+这样我们就可以愉快的进行 `tailwindcss` 在移动端上进行开发了。但现实情况是接入的通常不是一个新项目，所以会存在比较复杂的场景（历史原因，大家都懂），比如：
 
 1. 已经存在的项目 RootFontSize 是 100px，方便开发进行换算。
 2. 同一个项目同时存在 PC 端和移动端
@@ -52,13 +50,16 @@ Tailwind 默认使用 rem 作为单位：
 
 ✅ 原理简述
 
-- `--tpx` 表示 1px 的缩放值
+- `--tpx` 表示 `1px` 的缩放值
 - 所有 Tailwind 的单位都基于 `--tpx` 来计算
-- 例如：`tw-m-1` → `margin: calc(4 * var(--tpx))`
+
+例如：`tw-m-1` → `margin: calc(4 * var(--tpx))`
+
+所以无论原来采用什么自适应方案，只需要保证 `--tpx` 在标准设备下等于 `1px` 即可。
 
 这样做的好处是：
 
-- Tailwind 的单位不再依赖 html.fontSize
+- Tailwind 的单位不再依赖 html.fontSize（间接依赖）
 - 可以动态控制单位大小（如响应式设计、多端适配）
 
 ### 代码解析：gtThemeAdapter(unit = "--tpx")
@@ -68,6 +69,8 @@ Tailwind 默认使用 rem 作为单位：
 > 将 Tailwind 的单位从静态值（如 0.25rem）转换为基于 --tpx 的动态表达式
 
 1. `convert(value)` 函数
+
+   把 tailwind 静态值转换为基于 `--tpx` 的表达式
 
 ```js
 const convert = (value) => `calc(${16 * value} * var(${unit}))`;
@@ -112,14 +115,20 @@ export default {
 
 ### 运行时控制 `--tpx` 的值
 
+1、rem 布局
+
 在 `flexible.js` 中，通过动态设置 `--tpx` 的值来控制单位大小：
 
 ```js
+// rootFontSize 为基准大小，16px
 document.documentElement.style.setProperty(
   "--tpx",
-  `${1 / parseFloat(window.__ROOT_FONT_SIZE__)}rem`
+  `${1 / parseFloat(rootFontSize)}rem`
 );
 ```
+
+2、vw 布局
+vw 布局，由于要保证 `--tpx` 为 `1px`，所以设置 `--tpx=100vw/375`
 
 📌 示例：
 `html.fontSize` 表示标准设备尺寸下的大小

@@ -246,6 +246,48 @@ export default {
 // 其余预设单位同理
 ```
 
+### 适配 tailwindcss 插值及 `classname` 下的 `px` 单位
+
+上述我们只处理了 `tw-m-1` 类似这种静态值的适配，那么 `tw-text-[24px]` 这种插值以及自定义 `classname` 下的 `px` 单位如何适配。如下：
+
+```jsx
+const Home = () => {
+  return (
+    <div className="tw-p-2">
+      <h1 className="title tw-text-[24px] tw-font-bold">首页</h1>
+      <p className="tw-mt-1 tw-text-gray-600 tw-text-sm-m">
+        欢迎使用 Tailwind CSS Demo，当前路由下使用 16px 作为基准
+      </p>
+    </div>
+  );
+};
+```
+
+```css
+.title {
+  margin-top: 4px;
+}
+```
+
+参考上述的思想只需要把这些单位转成 `calc(value * var(--tpx))` 即可。这样就可以动态缩放。解决方案就是通过一个 `postcss` 插件来实现。参考 [postcss-px2tpx](../apps/tailwindcss-demo/src/tailwindcss/postcss-px2tpx.js)
+
+```js
+const px2tpx = require("./src/tailwindcss/postcss-px2tpx");
+const tailwindcss = require("tailwindcss");
+const postcssPresetEnv = require("postcss-preset-env");
+
+module.exports = {
+  plugins: [
+    tailwindcss(),
+    postcssPresetEnv(),
+    px2tpx({
+      source: "px",
+      target: "var(--tpx)",
+    }),
+  ],
+};
+```
+
 ## 疑问
 
 ### convert 函数

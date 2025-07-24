@@ -120,7 +120,7 @@ export default {
 在 `flexible.js` 中，通过动态设置 `--tpx` 的值来控制单位大小：
 
 ```js
-// rootFontSize 为基准大小，16px
+// rootFontSize 为基准大小，16px 或者 100px等等其他基准
 document.documentElement.style.setProperty(
   "--tpx",
   `${1 / parseFloat(rootFontSize)}rem`
@@ -128,17 +128,18 @@ document.documentElement.style.setProperty(
 ```
 
 2、vw 布局
-vw 布局，由于要保证 `--tpx` 为 `1px`，所以设置 `--tpx=100vw/375`
+
+由于要保证 `--tpx` 为 `1px`，所以设置 `--tpx=100vw/375`
 
 📌 示例：
 `html.fontSize` 表示标准设备尺寸下的大小
 
-| 场景        | html.fontSize           | --tpx 值                             | tw-m-1 实际大小 |
-| ----------- | ----------------------- | ------------------------------------ | --------------- |
-| PC 默认     | 16px                    | 1 / 16 = 0.0625rem → 1px             | 4px             |
-| 移动端      | 100px                   | 1 / 100 = 0.01rem → 1px              | 4px             |
-| vw 布局     | N/A                     | (100 / 375)vw → 1px                  | 4px             |
-| PC & 移动端 | PC: 16px, 移动端: 100px | PC: 1px = 4px, 移动端: 1px = 0.01rem | 4px             |
+| 场景        | html.fontSize           | --tpx 值                 | tw-m-1 实际大小 |
+| ----------- | ----------------------- | ------------------------ | --------------- |
+| PC 默认     | 16px                    | 1 / 16 = 0.0625rem → 1px | 4px             |
+| 移动端      | 100px                   | 1 / 100 = 0.01rem → 1px  | 4px             |
+| vw 布局     | N/A                     | (100 / 375)vw → 1px      | 4px             |
+| PC & 移动端 | PC: 16px, 移动端: 100px | PC: 1px, 移动端: 0.01rem | 4px             |
 
 > 🎯 无论使用哪种布局方式，只要 `--tpx` 始终代表 1px，Tailwind 的单位系统就能保持一致！
 
@@ -244,6 +245,50 @@ export default {
   10: '2.5rem',     // 40px
 // 其余预设单位同理
 ```
+
+### 适配 tailwindcss 插值及 `classname` 下的 `px` 单位
+
+上述我们只处理了 `tw-m-1` 类似这种静态值的适配，那么 `tw-text-[24px]` 这种插值以及自定义 `classname` 下的 `px` 单位如何适配。
+
+例如：
+```jsx
+const Home = () => {
+  return (
+    <div className="tw-p-2">
+      <h1 className="title tw-text-[24px] tw-font-bold">首页</h1>
+      <p className="tw-mt-1 tw-text-gray-600 tw-text-sm-m">
+        欢迎使用 Tailwind CSS Demo，当前路由下使用 16px 作为基准
+      </p>
+    </div>
+  );
+};
+```
+
+```css
+.title {
+  margin-top: 4px;
+}
+```
+
+参考上述的思想只需要把这些单位转成 `calc(value * var(--tpx))` 动态表达式，这样就可以动态缩放。解决方案就是通过一个 `postcss` 插件来实现。参考 [postcss-px2tpx](../apps/tailwindcss-demo/src/tailwindcss/postcss-px2tpx.js)
+
+```js
+const px2tpx = require("./src/tailwindcss/postcss-px2tpx");
+const tailwindcss = require("tailwindcss");
+const postcssPresetEnv = require("postcss-preset-env");
+
+module.exports = {
+  plugins: [
+    tailwindcss(),
+    postcssPresetEnv(),
+    px2tpx({
+      source: "px",
+      target: "var(--tpx)",
+    }),
+  ],
+};
+```
+<img width="1493" height="435" alt="image" src="https://github.com/user-attachments/assets/5642ba67-d0ba-4f0c-aa2e-a13462527626" />
 
 ## 疑问
 

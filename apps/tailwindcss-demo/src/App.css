@@ -28,3 +28,7 @@ body {
   font-weight: 400;
   opacity: 0.5;
 }
+
+.title {
+  margin-top: 4px;
+}

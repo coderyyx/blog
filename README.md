@@ -1,4 +1,6 @@
-# 文档目录
+<p align="center">
+  <img width="572" height="320" alt="processed-image" src="https://github.com/user-attachments/assets/c639f65e-18af-486b-8544-347e419f2e4c" />
+</p>
 
 ## 文章列表
 
